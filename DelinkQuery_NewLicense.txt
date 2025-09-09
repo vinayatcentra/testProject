@@ -1,0 +1,57 @@
+--DeLinking Query:
+--===================================================
+use NewLicenseDB
+go
+update C set C.iCompanyKey=P.iOriginalCompanyKey  from mLMM_CalLicense C
+join mLMM_ProductLicense P on P.iLicenseId=C.iLicenseId
+where C.iLicenseId in (51048,50941,50926,50893,50892,50843)
+ 
+update P set iCompanyKey=P.iOriginalCompanyKey  from mLMM_CalLicense C
+join mLMM_ProductLicense P on P.iLicenseId=C.iLicenseId
+where C.iLicenseId in (51048,50941,50926,50893,50892,50843)
+ 
+delete mLMM_CompanyCalLicenseLink where iLicenseId in (51048,50941,50926,50893,50892,50843)
+ 
+delete mLMM_UserDetails where iCompanyKey in (50975,51024,51025,51058,51073,51180)
+ 
+update mLMM_CompanyDetails set iCompanyId=null,sSqlServerInstance='',sHMAC='',iStatus=0 where iCompanyKey in (50975,51024,51025,51058,51073,51180)
+
+--CDID's and Password's
+--==================================
+51048  niL00f0S   --SaaS in Premise
+50893   va0sfses  --SaaS in Premise
+50892  S0urtse0   --SaaS in Premise
+
+50941  0nodrSur   --SaaS Annually In Cloud
+50926  SQedse0S   --SaaS Annually In Cloud
+50843  ivve0s00   --SaaS Annually In Cloud
+
+
+select iCompanyKey,* from mLMM_CalLicense where iLicenseId in (51048,50941,50926,50893,50892,50843)
+select iOriginalCompanyKey,* from mLMM_ProductLicense where iLicenseId in (51048,50941,50926,50893,50892,50843)
+
+select C.iLicenseId,P.sLicenseType,* from mLMM_CalLicense C
+join mLMM_ProductLicense P on P.iLicenseId=C.iLicenseId
+where C.iLicenseId in (51048,50941,50926,50893,50892,50843)
+
+select * from mLMM_CompanyDetails where iCompanyKey in (51048,50941,50926,50893,50892,50843)
+
+
+
+/*
+
+
+
+
+
+--- Execute below script for Nullify all existing Activated New License 
+delete from focus8erp..cCrm_CalLicenseInfo where iCalInfoId=?
+go
+use Focus80O0    -----> Change Company Code here 
+go
+update mCrm_Users set sCalId=null,iCalTypeId=null,iExpiryDate=null,iAssignedDate=null from mCrm_Users mu where mu.sCalId is not null
+go
+update mCrm_Company set sCompanyId=null,sPassword=null,iNextExecDateTime=null,iNoOfMainCals=null,iNoOfLiteCals=null,iVersion=null,iExpiryDate=null,sLicenseId=null,iAssignedUsers=null,iBalanceUsers=null,sLicenseType=null
+go
+delete from cCrm_License_Attach
+go
